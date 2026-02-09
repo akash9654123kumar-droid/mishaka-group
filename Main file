@@ -1,0 +1,144 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+import { ShoppingCart, Phone, Plus, Trash2 } from "lucide-react";
+
+export default function MishakaWebsite() {
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [newItem, setNewItem] = useState({ name: "", price: "", image: "" });
+
+  const addProduct = () => {
+    if (!newItem.name || !newItem.price) return;
+    setProducts([...products, { ...newItem, id: Date.now() }]);
+    setNewItem({ name: "", price: "", image: "" });
+  };
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
+  const removeFromCart = (id) => {
+    setCart(cart.filter((item, index) => index !== id));
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-4xl font-bold mb-2">
+          Mishaka Enterprises & Pharmaceuticals Pvt. Ltd.
+        </h1>
+        <p className="text-lg font-semibold animate-pulse">
+          📞 8595035401 | 9354807851
+        </p>
+        <p className="mt-2 text-gray-600">
+          Premium Hotel & Hospital Supplies – Quality You Can Trust
+        </p>
+      </motion.div>
+
+      {/* Add Product Section */}
+      <Card className="mb-8 shadow-xl rounded-2xl">
+        <CardContent className="p-6 grid gap-4">
+          <h2 className="text-2xl font-semibold">Add New Item</h2>
+          <Input
+            placeholder="Item Name"
+            value={newItem.name}
+            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+          />
+          <Input
+            placeholder="Price"
+            value={newItem.price}
+            onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+          />
+          <Input
+            placeholder="Image URL (optional)"
+            value={newItem.image}
+            onChange={(e) => setNewItem({ ...newItem, image: e.target.value })}
+          />
+          <Button onClick={addProduct} className="rounded-2xl">
+            <Plus className="mr-2" /> Add Item
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Products */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {products.map((item) => (
+          <Card key={item.id} className="shadow-xl rounded-2xl">
+            <CardContent className="p-4">
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-40 object-cover rounded-xl mb-3"
+                />
+              )}
+              <h3 className="text-xl font-semibold">{item.name}</h3>
+              <p className="text-gray-600 mb-2">₹ {item.price}</p>
+              <Button
+                onClick={() => addToCart(item)}
+                className="w-full rounded-2xl"
+              >
+                <ShoppingCart className="mr-2" /> Add to Cart
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Cart */}
+      <Card className="mt-10 shadow-xl rounded-2xl">
+        <CardContent className="p-6">
+          <h2 className="text-2xl font-semibold mb-4">Cart</h2>
+          {cart.length === 0 && <p>Your cart is empty.</p>}
+          {cart.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center mb-2"
+            >
+              <span>
+                {item.name} - ₹ {item.price}
+              </span>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => removeFromCart(index)}
+                className="rounded-xl"
+              >
+                <Trash2 size={16} />
+              </Button>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Contact Section */}
+      <Card className="mt-10 shadow-xl rounded-2xl">
+        <CardContent className="p-6 text-center">
+          <h2 className="text-2xl font-semibold mb-2">Contact Us Directly</h2>
+          <p className="mb-2">Call or WhatsApp Anytime</p>
+          <div className="flex justify-center gap-4">
+            <Button className="rounded-2xl">
+              <Phone className="mr-2" /> 8595035401
+            </Button>
+            <Button className="rounded-2xl">
+              <Phone className="mr-2" /> 9354807851
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Footer */}
+      <footer className="text-center mt-10 text-gray-600">
+        © {new Date().getFullYear()} Mishaka Enterprises & Pharmaceuticals Pvt. Ltd.
+      </footer>
+    </div>
+  );
+}
